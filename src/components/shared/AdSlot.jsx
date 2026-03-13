@@ -23,7 +23,27 @@ export default function AdSlot({ className = '', forceRefresh = false }) {
           adRef.current.setAttribute('data-full-width-responsive', 'true')
           
           console.log('Loading AdSense ad...')
+          console.log('AdSense element:', adRef.current)
+          console.log('Window location:', window.location.hostname)
+          
           ;(window.adsbygoogle = window.adsbygoogle || []).push({})
+          
+          // Verificar após 3 segundos se o anúncio foi preenchido
+          setTimeout(() => {
+            if (adRef.current) {
+              const rect = adRef.current.getBoundingClientRect()
+              console.log('Ad element height:', rect.height)
+              console.log('Ad element innerHTML:', adRef.current.innerHTML.substring(0, 100))
+              
+              if (rect.height === 0) {
+                console.warn('Ad not loaded - height is 0')
+              } else {
+                console.log('Ad loaded successfully!')
+              }
+            }
+          }, 3000)
+        } else {
+          console.warn('AdSense not available')
         }
       } catch (e) {
         console.error('Error loading AdSense:', e)
