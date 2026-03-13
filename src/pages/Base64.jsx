@@ -7,6 +7,7 @@ import CopyButton from '../components/shared/CopyButton'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import SEOHead from '../components/shared/SEOHead'
 import FAQSection from '../components/shared/FAQSection'
+import AdGateOverlay from '../components/shared/AdGateOverlay'
 import useAdGate from '../hooks/useAdGate'
 import { getVisitorId } from '../hooks/useVisitorId'
 
@@ -47,7 +48,7 @@ export default function Base64() {
   const [error, setError] = useState(null)
   const [encodeResult, setEncodeResult] = useState('')
   const [decodeUrl, setDecodeUrl] = useState(null)
-  const openAdGate = useAdGate()
+  const { openAdGate, triggerDownload, closeGate, gate } = useAdGate()
 
   const handleDecode = async () => {
     if (!base64Input.trim()) return
@@ -194,7 +195,7 @@ export default function Base64() {
             {decodeUrl ? (
               <div className="flex gap-3">
                 <motion.button
-                  onClick={() => openAdGate(decodeUrl)}
+                  onClick={() => openAdGate(decodeUrl, `decoded.${decodeFormat}`)}
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   className="btn-primary flex items-center gap-2"
@@ -258,6 +259,7 @@ export default function Base64() {
         )}
       </div>
       <FAQSection faqs={base64Faqs} />
+      <AdGateOverlay visible={gate.visible} onDownload={triggerDownload} onClose={closeGate} />
     </motion.div>
   )
 }

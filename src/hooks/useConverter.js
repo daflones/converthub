@@ -25,16 +25,17 @@ export default function useConverter(endpoint) {
 
         xhr.onload = () => {
           setProgress(100)
+          const contentType = xhr.getResponseHeader('Content-Type') || ''
           if (xhr.status >= 200 && xhr.status < 300) {
-            const contentType = xhr.getResponseHeader('Content-Type')
-            if (contentType && contentType.includes('application/json')) {
+            if (contentType.includes('application/json')) {
               try {
-                resolve(JSON.parse(xhr.responseText))
+                const text = new TextDecoder().decode(xhr.response)
+                resolve(JSON.parse(text))
               } catch {
                 resolve(xhr.response)
               }
             } else {
-              const blob = new Blob([xhr.response])
+              const blob = new Blob([xhr.response], { type: contentType })
               const url = URL.createObjectURL(blob)
               const disposition = xhr.getResponseHeader('Content-Disposition')
               let filename = 'download'
@@ -47,7 +48,8 @@ export default function useConverter(endpoint) {
           } else {
             let errMsg = 'Erro na conversão'
             try {
-              const parsed = JSON.parse(xhr.responseText)
+              const text = new TextDecoder().decode(xhr.response)
+              const parsed = JSON.parse(text)
               errMsg = parsed.error || errMsg
             } catch {}
             reject(new Error(errMsg))

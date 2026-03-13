@@ -1,11 +1,28 @@
-import { useCallback } from 'react'
+import { useState, useCallback } from 'react'
 
 export default function useAdGate() {
-  const openAdGate = useCallback((downloadUrl) => {
+  const [gate, setGate] = useState({ visible: false, url: null, filename: null })
+
+  const openAdGate = useCallback((downloadUrl, filename = 'download') => {
     if (!downloadUrl) return
-    const encoded = encodeURIComponent(downloadUrl)
-    window.open(`/ad-gate?redirect=${encoded}`, '_blank')
+    setGate({ visible: true, url: downloadUrl, filename })
   }, [])
 
-  return openAdGate
+  const triggerDownload = useCallback(() => {
+    if (!gate.url) return
+    const a = document.createElement('a')
+    a.href = gate.url
+    a.download = gate.filename || 'download'
+    a.style.display = 'none'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    setGate({ visible: false, url: null, filename: null })
+  }, [gate])
+
+  const closeGate = useCallback(() => {
+    setGate({ visible: false, url: null, filename: null })
+  }, [])
+
+  return { openAdGate, triggerDownload, closeGate, gate }
 }

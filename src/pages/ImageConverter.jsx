@@ -7,6 +7,7 @@ import ProgressBar from '../components/shared/ProgressBar'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import SEOHead from '../components/shared/SEOHead'
 import FAQSection from '../components/shared/FAQSection'
+import AdGateOverlay from '../components/shared/AdGateOverlay'
 import useAdGate from '../hooks/useAdGate'
 import useConverter from '../hooks/useConverter'
 
@@ -40,7 +41,7 @@ export default function ImageConverter() {
   const [quality, setQuality] = useState(85)
   const [preview, setPreview] = useState(null)
   const { convert, loading, progress, error, result, reset } = useConverter('/api/convert/image')
-  const openAdGate = useAdGate()
+  const { openAdGate, triggerDownload, closeGate, gate } = useAdGate()
 
   useEffect(() => {
     if (file) {
@@ -63,7 +64,7 @@ export default function ImageConverter() {
 
   const handleDownload = () => {
     if (result?.url) {
-      openAdGate(result.url)
+      openAdGate(result.url, result.filename || `converted.${format}`)
     }
   }
 
@@ -199,6 +200,7 @@ export default function ImageConverter() {
         )}
       </div>
       <FAQSection faqs={imageFaqs} />
+      <AdGateOverlay visible={gate.visible} onDownload={triggerDownload} onClose={closeGate} />
     </motion.div>
   )
 }

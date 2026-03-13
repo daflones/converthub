@@ -285,9 +285,16 @@ app.post('/api/convert/video', upload.single('file'), (req, res) => {
   const inputPath = req.file.path
   const outputPath = path.join(req.visitorDir, `${Date.now()}-output.${format}`)
 
+  const videoMimeMap = {
+    mp4: 'video/mp4', ogg: 'video/ogg', webm: 'video/webm', avi: 'video/x-msvideo',
+    mkv: 'video/x-matroska', mov: 'video/quicktime', flv: 'video/x-flv',
+    '3gp': 'video/3gpp', ts: 'video/mp2t', m4v: 'video/x-m4v',
+  }
+
   ffmpeg(inputPath)
     .toFormat(format === '3gp' ? '3gp' : format)
     .on('end', () => {
+      res.setHeader('Content-Type', videoMimeMap[format] || 'application/octet-stream')
       res.setHeader('Content-Disposition', `attachment; filename="converted.${format}"`)
       res.sendFile(outputPath, (err) => {
         cleanupFiles(inputPath, outputPath)
@@ -315,10 +322,16 @@ app.post('/api/convert/audio', upload.single('file'), (req, res) => {
   const inputPath = req.file.path
   const outputPath = path.join(req.visitorDir, `${Date.now()}-output.${format}`)
 
+  const audioMimeMap = {
+    mp3: 'audio/mpeg', wav: 'audio/wav', aac: 'audio/aac', flac: 'audio/flac',
+    m4a: 'audio/mp4', opus: 'audio/opus', wma: 'audio/x-ms-wma', ogg: 'audio/ogg',
+  }
+
   ffmpeg(inputPath)
     .noVideo()
     .toFormat(format === 'm4a' ? 'ipod' : format)
     .on('end', () => {
+      res.setHeader('Content-Type', audioMimeMap[format] || 'application/octet-stream')
       res.setHeader('Content-Disposition', `attachment; filename="converted.${format}"`)
       res.sendFile(outputPath, (err) => {
         cleanupFiles(inputPath, outputPath)
@@ -340,10 +353,16 @@ app.post('/api/convert/extract-audio', upload.single('file'), (req, res) => {
   const outFmt = audioFormats.includes(format) ? format : 'mp3'
   const outputPath = path.join(req.visitorDir, `${Date.now()}-extracted.${outFmt}`)
 
+  const extractMimeMap = {
+    mp3: 'audio/mpeg', wav: 'audio/wav', aac: 'audio/aac', flac: 'audio/flac',
+    m4a: 'audio/mp4', opus: 'audio/opus', wma: 'audio/x-ms-wma', ogg: 'audio/ogg',
+  }
+
   ffmpeg(inputPath)
     .noVideo()
     .toFormat(outFmt === 'm4a' ? 'ipod' : outFmt)
     .on('end', () => {
+      res.setHeader('Content-Type', extractMimeMap[outFmt] || 'application/octet-stream')
       res.setHeader('Content-Disposition', `attachment; filename="extracted.${outFmt}"`)
       res.sendFile(outputPath, (err) => {
         cleanupFiles(inputPath, outputPath)

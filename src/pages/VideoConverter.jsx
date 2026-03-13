@@ -7,6 +7,7 @@ import ProgressBar from '../components/shared/ProgressBar'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
 import SEOHead from '../components/shared/SEOHead'
 import FAQSection from '../components/shared/FAQSection'
+import AdGateOverlay from '../components/shared/AdGateOverlay'
 import useAdGate from '../hooks/useAdGate'
 import useConverter from '../hooks/useConverter'
 
@@ -38,7 +39,7 @@ export default function VideoConverter() {
   const [file, setFile] = useState(null)
   const [format, setFormat] = useState('mp4')
   const { convert, loading, progress, error, result, reset } = useConverter('/api/convert/video')
-  const openAdGate = useAdGate()
+  const { openAdGate, triggerDownload, closeGate, gate } = useAdGate()
 
   const handleConvert = async () => {
     if (!file) return
@@ -50,7 +51,7 @@ export default function VideoConverter() {
 
   const handleDownload = () => {
     if (result?.url) {
-      openAdGate(result.url)
+      openAdGate(result.url, result.filename || `converted.${format}`)
     }
   }
 
@@ -149,6 +150,7 @@ export default function VideoConverter() {
         )}
       </div>
       <FAQSection faqs={videoFaqs} />
+      <AdGateOverlay visible={gate.visible} onDownload={triggerDownload} onClose={closeGate} />
     </motion.div>
   )
 }
