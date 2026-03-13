@@ -48,23 +48,23 @@ function checkBaitElement() {
 
 /**
  * Técnica 2: Script Request Check
- * Tenta carregar um arquivo JS com nome conhecido pelos filtros.
+ * Tenta fazer fetch de um recurso que ad blockers normalmente bloqueiam.
  */
 function checkScriptRequest() {
   return new Promise((resolve) => {
-    const script = document.createElement('script')
-    script.src = `/ads/pagead2.js?v=${randomSuffix()}`
-    script.async = true
-    script.onload = () => resolve(false)
-    script.onerror = () => resolve(true)
-    document.head.appendChild(script)
-    setTimeout(() => resolve(true), 2000)
+    const url = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4861547568821741&v=${randomSuffix()}`
+    fetch(url, { method: 'HEAD', mode: 'no-cors' })
+      .then(() => resolve(false))
+      .catch(() => resolve(true))
+    setTimeout(() => resolve(false), 3000)
   })
 }
 
 /**
  * Técnica 3: AdSense iframe/slot check
- * Verifica se o slot do AdSense está com altura zero ou oculto.
+ * Verifica se o slot do AdSense foi removido ou ocultado por um adblocker.
+ * Slots com height 0 são normais antes dos anúncios carregarem, por isso
+ * verificamos apenas display:none ou remoção do DOM.
  */
 function checkAdSenseSlot() {
   return new Promise((resolve) => {
@@ -75,20 +75,21 @@ function checkAdSenseSlot() {
         return
       }
       const blocked = Array.from(slots).some(slot => {
+        const style = getComputedStyle(slot)
         return (
-          slot.offsetHeight === 0 ||
-          slot.offsetWidth === 0 ||
-          getComputedStyle(slot).display === 'none'
+          style.display === 'none' ||
+          style.visibility === 'hidden' ||
+          !document.body.contains(slot)
         )
       })
       resolve(blocked)
-    }, 800)
+    }, 1500)
   })
 }
 
 /**
  * Orquestrador principal — executa as 3 técnicas em paralelo.
- * Retorna true se QUALQUER técnica indicar bloqueio.
+ * Retorna true se PELO MENOS 2 técnicas indicarem bloqueio (mais conservador).
  */
 export async function detectAdBlock() {
   if (detectionResult !== null) return detectionResult
@@ -99,7 +100,9 @@ export async function detectAdBlock() {
     checkAdSenseSlot(),
   ])
 
-  detectionResult = bait || script || adsense
+  // Requer pelo menos 2 técnicas para reduzir falsos positivos
+  const blockedCount = [bait, script, adsense].filter(Boolean).length
+  detectionResult = blockedCount >= 2
   return detectionResult
 }
 
