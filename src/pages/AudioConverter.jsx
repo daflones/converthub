@@ -8,6 +8,7 @@ import LoadingSpinner from '../components/shared/LoadingSpinner'
 import SEOHead from '../components/shared/SEOHead'
 import FAQSection from '../components/shared/FAQSection'
 import AdGateOverlay from '../components/shared/AdGateOverlay'
+import AdSlot from '../components/shared/AdSlot'
 import useAdGate from '../hooks/useAdGate'
 import useConverter from '../hooks/useConverter'
 
@@ -217,7 +218,9 @@ export default function AudioConverter() {
           </motion.div>
         )}
       </div>
+      <AdSlot />
       <FAQSection faqs={audioFaqs} />
+      <AdSlot />
       <AdGateOverlay visible={gate.visible} onDownload={triggerDownload} onClose={closeGate} />
     </motion.div>
   )

@@ -8,6 +8,7 @@ import LoadingSpinner from '../components/shared/LoadingSpinner'
 import SEOHead from '../components/shared/SEOHead'
 import FAQSection from '../components/shared/FAQSection'
 import AdGateOverlay from '../components/shared/AdGateOverlay'
+import AdSlot from '../components/shared/AdSlot'
 import useAdGate from '../hooks/useAdGate'
 import { getVisitorId } from '../hooks/useVisitorId'
 
@@ -258,7 +259,9 @@ export default function Base64() {
           </>
         )}
       </div>
+      <AdSlot />
       <FAQSection faqs={base64Faqs} />
+      <AdSlot />
       <AdGateOverlay visible={gate.visible} onDownload={triggerDownload} onClose={closeGate} />
     </motion.div>
   )

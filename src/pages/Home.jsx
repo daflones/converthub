@@ -13,6 +13,7 @@ import {
   Sparkles,
 } from 'lucide-react'
 import SEOHead from '../components/shared/SEOHead'
+import AdSlot from '../components/shared/AdSlot'
 
 const homeSchema = {
   "@context": "https://schema.org",
@@ -170,6 +171,8 @@ export default function Home() {
         </motion.div>
       </section>
 
+      <AdSlot />
+
       {/* Categories Grid */}
       <motion.div
         variants={container}
@@ -192,6 +195,8 @@ export default function Home() {
           </motion.div>
         ))}
       </motion.div>
+
+      <AdSlot />
     </motion.div>
   )
 }

@@ -4,6 +4,7 @@ import { Type } from 'lucide-react'
 import CopyButton from '../components/shared/CopyButton'
 import SEOHead from '../components/shared/SEOHead'
 import FAQSection from '../components/shared/FAQSection'
+import AdSlot from '../components/shared/AdSlot'
 import { transformations, countStats } from '../utils/charConverter'
 
 const charSchema = {
@@ -131,7 +132,9 @@ export default function CharConverter() {
           />
         </div>
       </div>
+      <AdSlot />
       <FAQSection faqs={charFaqs} />
+      <AdSlot />
     </motion.div>
   )
 }
