@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   Youtube,
+  Instagram,
   Video,
   Music,
   Image,
@@ -51,6 +52,20 @@ const categories = [
     title: 'YouTube',
     desc: 'Baixe vídeos e Shorts do YouTube em MP4',
     gradient: 'from-red-500 to-red-700',
+  },
+  {
+    to: '/baixar-video-instagram',
+    icon: Instagram,
+    title: 'Instagram',
+    desc: 'Baixe vídeos, reels, fotos e posts do Instagram',
+    gradient: 'from-pink-500 to-purple-700',
+  },
+  {
+    to: '/baixar-video-tiktok',
+    icon: Video,
+    title: 'TikTok',
+    desc: 'Baixe vídeos do TikTok sem marca d\'água',
+    gradient: 'from-cyan-400 to-cyan-700',
   },
   {
     to: '/conversor-de-video',

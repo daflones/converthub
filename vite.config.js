@@ -11,6 +11,8 @@ export default defineConfig(({ mode }) => ({
       dynamicRoutes: [
         '/',
         '/baixar-video-youtube',
+        '/baixar-video-instagram',
+        '/baixar-video-tiktok',
         '/conversor-de-video',
         '/conversor-de-audio',
         '/conversor-de-imagem',

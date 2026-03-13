@@ -11,6 +11,8 @@ import ImageConverter from './pages/ImageConverter'
 import DocConverter from './pages/DocConverter'
 import Base64 from './pages/Base64'
 import CharConverter from './pages/CharConverter'
+import Instagram from './pages/Instagram'
+import TikTok from './pages/TikTok'
 import AdGate from './pages/AdGate'
 import NotFound from './pages/NotFound'
 import AdBlockOverlay from './components/shared/AdBlockOverlay'
@@ -34,6 +36,8 @@ export default function App() {
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<Home />} />
               <Route path="/baixar-video-youtube" element={<YouTube />} />
+              <Route path="/baixar-video-instagram" element={<Instagram />} />
+              <Route path="/baixar-video-tiktok" element={<TikTok />} />
               <Route path="/conversor-de-video" element={<VideoConverter />} />
               <Route path="/conversor-de-audio" element={<AudioConverter />} />
               <Route path="/conversor-de-imagem" element={<ImageConverter />} />

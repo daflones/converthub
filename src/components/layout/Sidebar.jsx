@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Home,
   Youtube,
+  Instagram,
   Video,
   Music,
   Image,
@@ -14,9 +15,18 @@ import {
   ChevronRight,
 } from 'lucide-react'
 
+// TikTok icon component
+const TikTokIcon = (props) => (
+  <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+  </svg>
+)
+
 const navItems = [
   { to: '/', icon: Home, label: 'Início' },
   { to: '/baixar-video-youtube', icon: Youtube, label: 'YouTube' },
+  { to: '/baixar-video-instagram', icon: Instagram, label: 'Instagram' },
+  { to: '/baixar-video-tiktok', icon: TikTokIcon, label: 'TikTok' },
   { to: '/conversor-de-video', icon: Video, label: 'Vídeo' },
   { to: '/conversor-de-audio', icon: Music, label: 'Áudio' },
   { to: '/conversor-de-imagem', icon: Image, label: 'Imagem' },

@@ -256,7 +256,7 @@ app.get('/api/youtube/proxy-download', async (req, res) => {
 
     const contentType = response.headers['content-type'] || 'application/octet-stream'
     const safeName = (title || 'video').replace(/[^a-zA-Z0-9À-ÿ\s\-_]/g, '').substring(0, 80).trim()
-    const filename = `${safeName || 'video'}.mp4`
+    const filename = `${safeName || 'video'} (Baixado em ConvertHub).mp4`
 
     res.setHeader('Content-Type', contentType)
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`)
@@ -267,6 +267,280 @@ app.get('/api/youtube/proxy-download', async (req, res) => {
     response.data.pipe(res)
   } catch (err) {
     console.error('Proxy download error:', err.message)
+    res.status(500).json({ error: 'Erro ao fazer proxy do download' })
+  }
+})
+
+// =====================================================================
+// INSTAGRAM ROUTES
+// =====================================================================
+
+app.post('/api/instagram/download', async (req, res) => {
+  const { url } = req.body
+  if (!url) return res.status(400).json({ error: 'URL é obrigatória' })
+
+  const igRegex = /(?:instagram\.com)\/(p|reel|reels|stories|tv)\/[a-zA-Z0-9_-]+/
+  if (!igRegex.test(url)) return res.status(400).json({ error: 'URL do Instagram inválida' })
+
+  // SSE
+  res.setHeader('Content-Type', 'text/event-stream')
+  res.setHeader('Cache-Control', 'no-cache')
+  res.setHeader('Connection', 'keep-alive')
+  res.flushHeaders()
+
+  const sendEvent = (data) => {
+    res.write(`data: ${JSON.stringify(data)}\n\n`)
+  }
+
+  try {
+    sendEvent({ type: 'status', message: 'Conectando ao Instagram...' })
+    sendEvent({ type: 'progress', percent: 10 })
+
+    const input = {
+      instagram_urls: [url],
+    }
+
+    const run = await apifyClient.actor('EYxjTNaAMlqUePwza').start(input)
+    const runId = run.id
+
+    sendEvent({ type: 'status', message: 'Processando conteúdo do Instagram...' })
+    sendEvent({ type: 'progress', percent: 25 })
+
+    // Poll for completion
+    let finished = false
+    const startTime = Date.now()
+    const TIMEOUT = 120000
+
+    while (!finished && (Date.now() - startTime) < TIMEOUT) {
+      await new Promise(r => setTimeout(r, 3000))
+      const runInfo = await apifyClient.run(runId).get()
+
+      if (runInfo.status === 'SUCCEEDED') {
+        finished = true
+      } else if (['FAILED', 'ABORTED', 'TIMED-OUT'].includes(runInfo.status)) {
+        sendEvent({ type: 'error', message: 'Falha ao processar o conteúdo do Instagram.' })
+        res.end()
+        return
+      } else {
+        const elapsed = (Date.now() - startTime) / TIMEOUT
+        sendEvent({ type: 'progress', percent: Math.min(25 + elapsed * 65, 90) })
+      }
+    }
+
+    if (!finished) {
+      sendEvent({ type: 'error', message: 'Tempo esgotado. Tente novamente.' })
+      res.end()
+      return
+    }
+
+    sendEvent({ type: 'progress', percent: 95 })
+    sendEvent({ type: 'status', message: 'Finalizando...' })
+
+    const runData = await apifyClient.run(runId).get()
+    const { items } = await apifyClient.dataset(runData.defaultDatasetId).listItems()
+
+    if (!items || items.length === 0) {
+      sendEvent({ type: 'error', message: 'Nenhum resultado encontrado para esta URL.' })
+      res.end()
+      return
+    }
+
+    sendEvent({ type: 'progress', percent: 100 })
+
+    // Parse Instagram results using real payload structure
+    const results = []
+    for (const item of items) {
+      const dlUrl = item.download_url || item.downloadUrl || item.videoUrl || item.displayUrl || ''
+      if (!dlUrl) continue
+
+      results.push({
+        type: item.media_type || (item.file_extension === 'mp4' ? 'video' : 'image'),
+        downloadUrl: dlUrl,
+        thumbnail: item.thumbnail_url || item.thumbnailUrl || item.displayUrl || '',
+        caption: (item.title || item.caption || '').substring(0, 200),
+        username: item.username || item.ownerUsername || '',
+        likes: item.like_count || 0,
+        comments: item.comment_count || 0,
+        timestamp: item.taken_at || item.timestamp || '',
+      })
+    }
+
+    if (results.length === 0) {
+      sendEvent({ type: 'error', message: 'Não foi possível extrair mídia desta URL.' })
+      res.end()
+      return
+    }
+
+    sendEvent({ type: 'done', results })
+    res.end()
+  } catch (err) {
+    console.error('Instagram download error:', err.message)
+    sendEvent({ type: 'error', message: 'Erro ao processar conteúdo do Instagram.' })
+    res.end()
+  }
+})
+
+app.get('/api/instagram/proxy-download', async (req, res) => {
+  try {
+    const { url, filename } = req.query
+    if (!url) return res.status(400).json({ error: 'URL é obrigatória' })
+
+    const decoded = decodeURIComponent(url)
+    const response = await axios({
+      method: 'GET',
+      url: decoded,
+      responseType: 'stream',
+      timeout: 120000,
+    })
+
+    const contentType = response.headers['content-type'] || 'application/octet-stream'
+    const safeName = (filename || 'instagram-media').replace(/[^a-zA-Z0-9À-ÿ\s\-_]/g, '').substring(0, 80).trim()
+    const ext = contentType.includes('video') ? 'mp4' : contentType.includes('image') ? 'jpg' : 'mp4'
+    const finalName = `${safeName || 'instagram-media'} (Baixado em ConvertHub).${ext}`
+
+    res.setHeader('Content-Type', contentType)
+    res.setHeader('Content-Disposition', `attachment; filename="${finalName}"`)
+    if (response.headers['content-length']) {
+      res.setHeader('Content-Length', response.headers['content-length'])
+    }
+
+    response.data.pipe(res)
+  } catch (err) {
+    console.error('Instagram proxy download error:', err.message)
+    res.status(500).json({ error: 'Erro ao fazer proxy do download' })
+  }
+})
+
+// =====================================================================
+// TIKTOK ROUTES
+// =====================================================================
+
+app.post('/api/tiktok/download', async (req, res) => {
+  const { url } = req.body
+  if (!url) return res.status(400).json({ error: 'URL é obrigatória' })
+
+  const tkRegex = /tiktok\.com\/@[^/]+\/video\/\d+|tiktok\.com\/t\/[a-zA-Z0-9]+|vm\.tiktok\.com\/[a-zA-Z0-9]+/
+  if (!tkRegex.test(url)) return res.status(400).json({ error: 'URL do TikTok inválida' })
+
+  // SSE
+  res.setHeader('Content-Type', 'text/event-stream')
+  res.setHeader('Cache-Control', 'no-cache')
+  res.setHeader('Connection', 'keep-alive')
+  res.flushHeaders()
+
+  const sendEvent = (data) => {
+    res.write(`data: ${JSON.stringify(data)}\n\n`)
+  }
+
+  try {
+    sendEvent({ type: 'status', message: 'Conectando ao TikTok...' })
+    sendEvent({ type: 'progress', percent: 10 })
+
+    const input = {
+      videoUrls: [url],
+      ttl: 'none',
+    }
+
+    const run = await apifyClient.actor('xPJfblyAEnBXEWByE').start(input)
+    const runId = run.id
+
+    sendEvent({ type: 'status', message: 'Processando vídeo do TikTok...' })
+    sendEvent({ type: 'progress', percent: 25 })
+
+    // Poll for completion
+    let finished = false
+    const startTime = Date.now()
+    const TIMEOUT = 120000
+
+    while (!finished && (Date.now() - startTime) < TIMEOUT) {
+      await new Promise(r => setTimeout(r, 3000))
+      const runInfo = await apifyClient.run(runId).get()
+
+      if (runInfo.status === 'SUCCEEDED') {
+        finished = true
+      } else if (['FAILED', 'ABORTED', 'TIMED-OUT'].includes(runInfo.status)) {
+        sendEvent({ type: 'error', message: 'Falha ao processar o vídeo do TikTok.' })
+        res.end()
+        return
+      } else {
+        const elapsed = (Date.now() - startTime) / TIMEOUT
+        sendEvent({ type: 'progress', percent: Math.min(25 + elapsed * 65, 90) })
+      }
+    }
+
+    if (!finished) {
+      sendEvent({ type: 'error', message: 'Tempo esgotado. Tente novamente.' })
+      res.end()
+      return
+    }
+
+    sendEvent({ type: 'progress', percent: 95 })
+    sendEvent({ type: 'status', message: 'Finalizando...' })
+
+    const runData = await apifyClient.run(runId).get()
+    const { items } = await apifyClient.dataset(runData.defaultDatasetId).listItems()
+
+    if (!items || items.length === 0) {
+      sendEvent({ type: 'error', message: 'Nenhum resultado encontrado para esta URL.' })
+      res.end()
+      return
+    }
+
+    sendEvent({ type: 'progress', percent: 100 })
+
+    // Parse TikTok results using real payload structure
+    // Fields: data.hdplay (HD), data.play (normal), data.cover, data.music, inputUrl
+    const results = items.map(item => ({
+      type: 'video',
+      downloadUrl: item['data.hdplay'] || item['data.play'] || item.videoUrl || item.downloadUrl || '',
+      downloadUrlSD: item['data.play'] || '',
+      thumbnail: item['data.cover'] || item.thumbnailUrl || item.coverUrl || '',
+      musicUrl: item['data.music'] || '',
+      inputUrl: item.inputUrl || '',
+    }))
+
+    const validResults = results.filter(r => r.downloadUrl)
+    if (validResults.length === 0) {
+      sendEvent({ type: 'error', message: 'Não foi possível extrair o vídeo desta URL.' })
+      res.end()
+      return
+    }
+
+    sendEvent({ type: 'done', results: validResults })
+    res.end()
+  } catch (err) {
+    console.error('TikTok download error:', err.message)
+    sendEvent({ type: 'error', message: 'Erro ao processar vídeo do TikTok.' })
+    res.end()
+  }
+})
+
+app.get('/api/tiktok/proxy-download', async (req, res) => {
+  try {
+    const { url, filename } = req.query
+    if (!url) return res.status(400).json({ error: 'URL é obrigatória' })
+
+    const decoded = decodeURIComponent(url)
+    const response = await axios({
+      method: 'GET',
+      url: decoded,
+      responseType: 'stream',
+      timeout: 120000,
+    })
+
+    const contentType = response.headers['content-type'] || 'video/mp4'
+    const safeName = (filename || 'tiktok-video').replace(/[^a-zA-Z0-9À-ÿ\s\-_]/g, '').substring(0, 80).trim()
+    const finalName = `${safeName || 'tiktok-video'} (Baixado em ConvertHub).mp4`
+
+    res.setHeader('Content-Type', contentType)
+    res.setHeader('Content-Disposition', `attachment; filename="${finalName}"`)
+    if (response.headers['content-length']) {
+      res.setHeader('Content-Length', response.headers['content-length'])
+    }
+
+    response.data.pipe(res)
+  } catch (err) {
+    console.error('TikTok proxy download error:', err.message)
     res.status(500).json({ error: 'Erro ao fazer proxy do download' })
   }
 })

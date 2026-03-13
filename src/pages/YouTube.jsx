@@ -4,6 +4,7 @@ import { Youtube, Download, AlertCircle, Clock, User, Play } from 'lucide-react'
 import ProgressBar from '../components/shared/ProgressBar'
 import SEOHead from '../components/shared/SEOHead'
 import FAQSection from '../components/shared/FAQSection'
+import AdGateOverlay from '../components/shared/AdGateOverlay'
 import useAdGate from '../hooks/useAdGate'
 import { getVisitorId } from '../hooks/useVisitorId'
 
@@ -61,7 +62,7 @@ export default function YouTube() {
   const [statusMsg, setStatusMsg] = useState('')
   const [videoInfo, setVideoInfo] = useState(null)
   const [fetchingInfo, setFetchingInfo] = useState(false)
-  const openAdGate = useAdGate()
+  const { openAdGate, triggerDownload, closeGate, gate } = useAdGate()
   const abortRef = useRef(null)
 
   const extractVideoId = (inputUrl) => {
@@ -432,6 +433,7 @@ export default function YouTube() {
         </motion.div>
       )}
       <FAQSection faqs={youtubeFaqs} />
+      <AdGateOverlay visible={gate.visible} onDownload={triggerDownload} onClose={closeGate} />
     </motion.div>
   )
 }
