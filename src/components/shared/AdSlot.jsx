@@ -47,7 +47,16 @@ export default function AdSlot({ className = '', forceRefresh = false }) {
       <ins
         key={forceRefresh ? uniqueKey : undefined}
         className="adsbygoogle"
-        style={{ display: 'block', minHeight: '90px' }}
+        style={{ 
+          display: 'block', 
+          width: '300px', 
+          height: '250px',
+          minWidth: '300px',
+          minHeight: '250px'
+        }}
+        data-ad-client="ca-pub-4861547568821741"
+        data-ad-slot="6240002763"
+        data-ad-format="rectangle"
         ref={adRef}
       />
     </div>
