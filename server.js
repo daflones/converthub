@@ -391,6 +391,14 @@ app.get('/api/instagram/proxy-download', async (req, res) => {
       url: decoded,
       responseType: 'stream',
       timeout: 120000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Referer': 'https://www.instagram.com/',
+        'Accept': '*/*',
+        'Accept-Language': 'pt-BR,pt;q=0.9,en;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+      },
     })
 
     const contentType = response.headers['content-type'] || 'application/octet-stream'
@@ -438,6 +446,7 @@ app.post('/api/tiktok/download', async (req, res) => {
 
     const input = {
       videoUrls: [url],
+      format: 'Video',
       ttl: 'none',
     }
 
@@ -489,15 +498,28 @@ app.post('/api/tiktok/download', async (req, res) => {
     sendEvent({ type: 'progress', percent: 100 })
 
     // Parse TikTok results using real payload structure
-    // Fields: data.hdplay (HD), data.play (normal), data.cover, data.music, inputUrl
-    const results = items.map(item => ({
-      type: 'video',
-      downloadUrl: item['data.hdplay'] || item['data.play'] || item.videoUrl || item.downloadUrl || '',
-      downloadUrlSD: item['data.play'] || '',
-      thumbnail: item['data.cover'] || item.thumbnailUrl || item.coverUrl || '',
-      musicUrl: item['data.music'] || '',
-      inputUrl: item.inputUrl || '',
-    }))
+    // Fields: data.hdplay (HD), data.play (SD), data.cover (thumbnail), data.music, data.title, author.nickname
+    const results = items.map(item => {
+      const data = item.data || {}
+      const author = data.author || {}
+      return {
+        type: 'video',
+        downloadUrl: data.hdplay || data.play || '',
+        downloadUrlSD: data.play || '',
+        thumbnail: data.cover || '',
+        musicUrl: data.music || '',
+        inputUrl: item.inputUrl || '',
+        id: data.id || item.id || '',
+        title: data.title || data.title_new || '',
+        username: author.unique_id || author.nickname || '',
+        nickname: author.nickname || '',
+        duration: data.duration || 0,
+        playCount: data.play_count || 0,
+        likeCount: data.digg_count || 0,
+        commentCount: data.comment_count || 0,
+        shareCount: data.share_count || 0,
+      }
+    })
 
     const validResults = results.filter(r => r.downloadUrl)
     if (validResults.length === 0) {
@@ -526,6 +548,14 @@ app.get('/api/tiktok/proxy-download', async (req, res) => {
       url: decoded,
       responseType: 'stream',
       timeout: 120000,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Referer': 'https://www.tiktok.com/',
+        'Accept': '*/*',
+        'Accept-Language': 'pt-BR,pt;q=0.9,en;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+      },
     })
 
     const contentType = response.headers['content-type'] || 'video/mp4'

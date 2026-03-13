@@ -8,7 +8,7 @@ export default function useAdGate() {
     setGate({ visible: true, url: downloadUrl, filename })
   }, [])
 
-  const triggerDownload = useCallback(() => {
+  const triggerDownload = useCallback((onAdRefresh) => {
     if (!gate.url) return
     const a = document.createElement('a')
     a.href = gate.url
@@ -18,6 +18,11 @@ export default function useAdGate() {
     a.click()
     document.body.removeChild(a)
     setGate({ visible: false, url: null, filename: null })
+    
+    // Refresh ads after download
+    if (onAdRefresh) {
+      setTimeout(onAdRefresh, 1000)
+    }
   }, [gate])
 
   const closeGate = useCallback(() => {

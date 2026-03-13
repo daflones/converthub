@@ -1,13 +1,21 @@
 import React, { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Download, AlertCircle, Video, Music } from 'lucide-react'
+import { Download, AlertCircle, Video, Music, User, Eye, Heart, MessageCircle } from 'lucide-react'
 import ProgressBar from '../components/shared/ProgressBar'
 import SEOHead from '../components/shared/SEOHead'
 import FAQSection from '../components/shared/FAQSection'
 import AdGateOverlay from '../components/shared/AdGateOverlay'
 import AdSlot from '../components/shared/AdSlot'
 import useAdGate from '../hooks/useAdGate'
+import useAdRefresh from '../hooks/useAdRefresh'
 import { getVisitorId } from '../hooks/useVisitorId'
+
+function formatNumber(num) {
+  if (!num) return ''
+  if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`
+  if (num >= 1000) return `${(num / 1000).toFixed(1)}K`
+  return String(num)
+}
 
 const tiktokSchema = {
   "@context": "https://schema.org",
@@ -45,6 +53,7 @@ export default function TikTok() {
   const [progress, setProgress] = useState(0)
   const [statusMsg, setStatusMsg] = useState('')
   const { openAdGate, triggerDownload, closeGate, gate } = useAdGate()
+  const { refreshKey, refreshAds } = useAdRefresh()
   const abortRef = useRef(null)
 
   const fakeTimerRef = useRef(null)
@@ -280,43 +289,61 @@ export default function TikTok() {
                 </div>
               )}
 
-              {/* Download Buttons */}
-              <div className="p-4 space-y-2">
+              {/* Header with Title and Stats */}
+              <div className="p-4 border-b border-border">
+                {item.username && (
+                  <p className="flex items-center gap-1.5 text-sm font-semibold text-white mb-2">
+                    <User className="h-3.5 w-3.5 text-cyan-400" />
+                    @{item.username}
+                    {item.nickname && item.nickname !== item.username && (
+                      <span className="text-gray-400">({item.nickname})</span>
+                    )}
+                  </p>
+                )}
+                {item.title && (
+                  <p className="text-sm text-gray-300 line-clamp-3 mb-2">{item.title}</p>
+                )}
+                <div className="flex items-center gap-4 text-xs text-gray-500">
+                  {item.playCount > 0 && (
+                    <span className="flex items-center gap-1">
+                      <Eye className="h-3 w-3" />
+                      {formatNumber(item.playCount)}
+                    </span>
+                  )}
+                  {item.likeCount > 0 && (
+                    <span className="flex items-center gap-1">
+                      <Heart className="h-3 w-3" />
+                      {formatNumber(item.likeCount)}
+                    </span>
+                  )}
+                  {item.commentCount > 0 && (
+                    <span className="flex items-center gap-1">
+                      <MessageCircle className="h-3 w-3" />
+                      {formatNumber(item.commentCount)}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Download Button */}
+              <div className="p-4">
                 <button
-                  onClick={() => handleDownload(item.downloadUrl, 'tiktok-video-HD', 'mp4')}
+                  onClick={() => handleDownload(item.downloadUrlSD || item.downloadUrl, 'tiktok-video-HD', 'mp4')}
                   className="btn-primary flex w-full items-center justify-center gap-2 py-2.5 text-sm"
                 >
                   <Download className="h-4 w-4" />
                   Baixar Vídeo HD (Sem Marca D'água)
                 </button>
-                {item.downloadUrlSD && item.downloadUrlSD !== item.downloadUrl && (
-                  <button
-                    onClick={() => handleDownload(item.downloadUrlSD, 'tiktok-video-SD', 'mp4')}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card py-2.5 text-sm font-semibold text-gray-300 transition-all hover:bg-surface hover:text-white"
-                  >
-                    <Download className="h-4 w-4" />
-                    Baixar Vídeo SD
-                  </button>
-                )}
-                {item.musicUrl && (
-                  <button
-                    onClick={() => handleDownload(item.musicUrl, 'tiktok-musica', 'mp3')}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-card py-2.5 text-sm font-semibold text-gray-300 transition-all hover:bg-surface hover:text-white"
-                  >
-                    <Music className="h-4 w-4" />
-                    Baixar Música / Áudio
-                  </button>
-                )}
               </div>
             </motion.div>
           ))}
         </motion.div>
       )}
 
-      <AdSlot />
+      <AdSlot key={`ad1-${refreshKey}`} />
       <FAQSection faqs={tiktokFaqs} />
-      <AdSlot />
-      <AdGateOverlay visible={gate.visible} onDownload={triggerDownload} onClose={closeGate} />
+      <AdSlot key={`ad2-${refreshKey}`} />
+      <AdGateOverlay visible={gate.visible} onDownload={() => triggerDownload(refreshAds)} onClose={closeGate} />
     </motion.div>
   )
 }
