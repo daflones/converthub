@@ -1,0 +1,48 @@
+import React from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
+import Sidebar from './components/layout/Sidebar'
+import Header from './components/layout/Header'
+import Home from './pages/Home'
+import YouTube from './pages/YouTube'
+import VideoConverter from './pages/VideoConverter'
+import AudioConverter from './pages/AudioConverter'
+import ImageConverter from './pages/ImageConverter'
+import DocConverter from './pages/DocConverter'
+import Base64 from './pages/Base64'
+import CharConverter from './pages/CharConverter'
+import AdGate from './pages/AdGate'
+import NotFound from './pages/NotFound'
+
+export default function App() {
+  const location = useLocation()
+  const isAdGate = location.pathname === '/ad-gate'
+
+  if (isAdGate) {
+    return <AdGate />
+  }
+
+  return (
+    <div className="flex min-h-screen bg-background">
+      <Sidebar />
+      <div className="flex flex-1 flex-col ml-[240px]">
+        <Header />
+        <main className="flex-1 overflow-auto px-6 pb-8 pt-20">
+          <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
+              <Route path="/" element={<Home />} />
+              <Route path="/youtube" element={<YouTube />} />
+              <Route path="/video-converter" element={<VideoConverter />} />
+              <Route path="/audio-converter" element={<AudioConverter />} />
+              <Route path="/image-converter" element={<ImageConverter />} />
+              <Route path="/doc-converter" element={<DocConverter />} />
+              <Route path="/base64" element={<Base64 />} />
+              <Route path="/char-converter" element={<CharConverter />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AnimatePresence>
+        </main>
+      </div>
+    </div>
+  )
+}
