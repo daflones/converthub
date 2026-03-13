@@ -284,6 +284,8 @@ app.post('/api/convert/video', upload.single('file'), (req, res) => {
 
   const inputPath = req.file.path
   const outputPath = path.join(req.visitorDir, `${Date.now()}-output.${format}`)
+  const originalName = path.parse(req.file.originalname).name
+  const finalFilename = `${originalName} (Baixado em ConvertHub).${format}`
 
   const videoMimeMap = {
     mp4: 'video/mp4', ogg: 'video/ogg', webm: 'video/webm', avi: 'video/x-msvideo',
@@ -295,7 +297,7 @@ app.post('/api/convert/video', upload.single('file'), (req, res) => {
     .toFormat(format === '3gp' ? '3gp' : format)
     .on('end', () => {
       res.setHeader('Content-Type', videoMimeMap[format] || 'application/octet-stream')
-      res.setHeader('Content-Disposition', `attachment; filename="converted.${format}"`)
+      res.setHeader('Content-Disposition', `attachment; filename="${finalFilename}"`)
       res.sendFile(outputPath, (err) => {
         cleanupFiles(inputPath, outputPath)
       })
@@ -327,12 +329,15 @@ app.post('/api/convert/audio', upload.single('file'), (req, res) => {
     m4a: 'audio/mp4', opus: 'audio/opus', wma: 'audio/x-ms-wma', ogg: 'audio/ogg',
   }
 
+  const originalName = path.parse(req.file.originalname).name
+  const finalFilename = `${originalName} (Baixado em ConvertHub).${format}`
+
   ffmpeg(inputPath)
     .noVideo()
     .toFormat(format === 'm4a' ? 'ipod' : format)
     .on('end', () => {
       res.setHeader('Content-Type', audioMimeMap[format] || 'application/octet-stream')
-      res.setHeader('Content-Disposition', `attachment; filename="converted.${format}"`)
+      res.setHeader('Content-Disposition', `attachment; filename="${finalFilename}"`)
       res.sendFile(outputPath, (err) => {
         cleanupFiles(inputPath, outputPath)
       })
@@ -358,12 +363,15 @@ app.post('/api/convert/extract-audio', upload.single('file'), (req, res) => {
     m4a: 'audio/mp4', opus: 'audio/opus', wma: 'audio/x-ms-wma', ogg: 'audio/ogg',
   }
 
+  const originalName = path.parse(req.file.originalname).name
+  const finalFilename = `${originalName} (Baixado em ConvertHub).${outFmt}`
+
   ffmpeg(inputPath)
     .noVideo()
     .toFormat(outFmt === 'm4a' ? 'ipod' : outFmt)
     .on('end', () => {
       res.setHeader('Content-Type', extractMimeMap[outFmt] || 'application/octet-stream')
-      res.setHeader('Content-Disposition', `attachment; filename="extracted.${outFmt}"`)
+      res.setHeader('Content-Disposition', `attachment; filename="${finalFilename}"`)
       res.sendFile(outputPath, (err) => {
         cleanupFiles(inputPath, outputPath)
       })
@@ -391,24 +399,33 @@ app.post('/api/convert/image', upload.single('file'), async (req, res) => {
   const outputPath = path.join(req.visitorDir, `${Date.now()}-output.${format}`)
   const q = Math.min(100, Math.max(1, parseInt(quality) || 85))
 
+  const originalName = path.parse(req.file.originalname).name
+  const finalFilename = `${originalName} (Baixado em ConvertHub).${format}`
+
   try {
     let pipeline = sharp(inputPath)
     const fmt = format === 'jpg' ? 'jpeg' : format
 
-    if (fmt === 'jpeg') pipeline = pipeline.jpeg({ quality: q })
-    else if (fmt === 'png') pipeline = pipeline.png({ quality: q })
-    else if (fmt === 'webp') pipeline = pipeline.webp({ quality: q })
-    else if (fmt === 'avif') pipeline = pipeline.avif({ quality: q })
-    else if (fmt === 'tiff') pipeline = pipeline.tiff({ quality: q })
-    else if (fmt === 'gif') pipeline = pipeline.gif()
-    else if (fmt === 'bmp') pipeline = pipeline.raw()
-    else pipeline = pipeline.toFormat(fmt)
-
     if (format === 'ico') {
-      pipeline = sharp(inputPath).resize(256, 256).png()
+      // ICO: resize to 256x256 and save as PNG (browsers handle it)
+      await sharp(inputPath).resize(256, 256, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } }).png().toFile(outputPath)
+    } else if (fmt === 'jpeg') {
+      await pipeline.jpeg({ quality: q }).toFile(outputPath)
+    } else if (fmt === 'png') {
+      await pipeline.png({ quality: q }).toFile(outputPath)
+    } else if (fmt === 'webp') {
+      await pipeline.webp({ quality: q }).toFile(outputPath)
+    } else if (fmt === 'avif') {
+      await pipeline.avif({ quality: q }).toFile(outputPath)
+    } else if (fmt === 'tiff') {
+      await pipeline.tiff({ quality: q }).toFile(outputPath)
+    } else if (fmt === 'gif') {
+      await pipeline.gif().toFile(outputPath)
+    } else if (fmt === 'bmp') {
+      await pipeline.toFormat('bmp').toFile(outputPath)
+    } else {
+      await pipeline.toFormat(fmt).toFile(outputPath)
     }
-
-    await pipeline.toFile(outputPath)
 
     const mimeMap = {
       jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp',
@@ -416,7 +433,7 @@ app.post('/api/convert/image', upload.single('file'), async (req, res) => {
     }
 
     res.setHeader('Content-Type', mimeMap[format] || 'application/octet-stream')
-    res.setHeader('Content-Disposition', `attachment; filename="converted.${format}"`)
+    res.setHeader('Content-Disposition', `attachment; filename="${finalFilename}"`)
     res.sendFile(outputPath, () => {
       cleanupFiles(inputPath, outputPath)
     })
@@ -439,6 +456,8 @@ app.post('/api/convert/document', upload.single('file'), async (req, res) => {
   const inputPath = req.file.path
   const inputExt = path.extname(req.file.originalname).toLowerCase().replace('.', '')
   const outputPath = path.join(req.visitorDir, `${Date.now()}-output.${format}`)
+  const originalName = path.parse(req.file.originalname).name
+  const finalFilename = `${originalName} (Baixado em ConvertHub).${format}`
 
   try {
     const pair = `${inputExt}-${format}`
@@ -666,7 +685,7 @@ app.post('/api/convert/document', upload.single('file'), async (req, res) => {
     }
 
     res.setHeader('Content-Type', mimeMap[format] || 'application/octet-stream')
-    res.setHeader('Content-Disposition', `attachment; filename="converted.${format}"`)
+    res.setHeader('Content-Disposition', `attachment; filename="${finalFilename}"`)
     res.sendFile(outputPath, () => {
       cleanupFiles(inputPath, outputPath)
     })

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Music, Download, AlertCircle } from 'lucide-react'
 import FileDropZone from '../components/shared/FileDropZone'
@@ -53,6 +53,12 @@ export default function AudioConverter() {
 
   const currentConverter = activeTab === 'audio' ? audioConverter : extractConverter
 
+  const handleReset = () => {
+    setFile(null)
+    audioConverter.reset()
+    extractConverter.reset()
+  }
+
   const handleConvert = async () => {
     if (!file) return
     const formData = new FormData()
@@ -80,6 +86,13 @@ export default function AudioConverter() {
     if (activeTab === 'audio') return audioInputFormats
     return videoInputFormats
   }
+
+  // Auto-convert quando trocar formato
+  useEffect(() => {
+    if (file && !currentConverter.loading && !currentConverter.result) {
+      handleConvert()
+    }
+  }, [format])
 
   const getLabel = () => {
     if (activeTab === 'audio') return 'Arraste seu arquivo de áudio aqui'

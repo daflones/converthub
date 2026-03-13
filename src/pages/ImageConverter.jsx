@@ -74,6 +74,13 @@ export default function ImageConverter() {
     reset()
   }
 
+  // Auto-convert quando trocar formato ou qualidade
+  useEffect(() => {
+    if (file && !loading && !result) {
+      handleConvert()
+    }
+  }, [format, quality])
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

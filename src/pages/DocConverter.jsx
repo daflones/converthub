@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { FileText, Download, AlertCircle } from 'lucide-react'
 import FileDropZone from '../components/shared/FileDropZone'
@@ -86,6 +86,13 @@ export default function DocConverter() {
     setFormat('')
     reset()
   }
+
+  // Auto-convert quando trocar formato
+  useEffect(() => {
+    if (file && format && !loading && !result) {
+      handleConvert()
+    }
+  }, [format])
 
   return (
     <motion.div

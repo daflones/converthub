@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Video, Download, AlertCircle } from 'lucide-react'
 import FileDropZone from '../components/shared/FileDropZone'
@@ -59,6 +59,13 @@ export default function VideoConverter() {
     setFile(null)
     reset()
   }
+
+  // Auto-convert quando trocar formato
+  useEffect(() => {
+    if (file && !loading && !result) {
+      handleConvert()
+    }
+  }, [format])
 
   return (
     <motion.div
