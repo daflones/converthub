@@ -43,8 +43,8 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
   contentSecurityPolicy: {
     directives: {
-      'script-src': ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com", "https://pagead2.googlesyndication.com", "https://googleads.g.doubleclick.net", "https://www.google-analytics.com", "https://static.cloudflareinsights.com"],
-      'connect-src': ["'self'", "https://www.googletagmanager.com", "https://pagead2.googlesyndication.com", "https://googleads.g.doubleclick.net", "https://www.google-analytics.com", "https://ep1.adtrafficquality.google"],
+      'script-src': ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com", "https://pagead2.googlesyndication.com", "https://googleads.g.doubleclick.net", "https://www.google-analytics.com", "https://static.cloudflareinsights.com", "https://ep1.adtrafficquality.google", "https://ep2.adtrafficquality.google"],
+      'connect-src': ["'self'", "https://www.googletagmanager.com", "https://pagead2.googlesyndication.com", "https://googleads.g.doubleclick.net", "https://www.google-analytics.com", "https://ep1.adtrafficquality.google", "https://ep2.adtrafficquality.google"],
       'img-src': ["'self'", "data:", "https:"],
       'font-src': ["'self'", "https:"],
       'frame-src': ["'self'", "https://googleads.g.doubleclick.net"],
