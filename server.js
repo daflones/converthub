@@ -39,7 +39,18 @@ app.use(cors({
 }))
 
 // ─── Security & Logging ─────────────────────────────────────────────
-app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }))
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  contentSecurityPolicy: {
+    directives: {
+      'script-src': ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com", "https://pagead2.googlesyndication.com", "https://googleads.g.doubleclick.net", "https://www.google-analytics.com", "https://static.cloudflareinsights.com"],
+      'connect-src': ["'self'", "https://www.googletagmanager.com", "https://pagead2.googlesyndication.com", "https://googleads.g.doubleclick.net", "https://www.google-analytics.com"],
+      'img-src': ["'self'", "data:", "https:"],
+      'font-src': ["'self'", "https:"],
+      'default-src': ["'self'"]
+    }
+  }
+}))
 app.use(morgan('short'))
 app.use(express.json({ limit: '50mb' }))
 app.use(express.urlencoded({ extended: true, limit: '50mb' }))
