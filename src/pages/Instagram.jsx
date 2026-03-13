@@ -174,11 +174,11 @@ export default function Instagram() {
       className="mx-auto max-w-3xl"
     >
       <SEOHead
-        title="Baixar Vídeo e Foto do Instagram — Reels, Posts, Stories"
-        description="Baixe vídeos, reels, fotos e posts do Instagram gratuitamente. Sem instalar nada. Download rápido e seguro, online e sem registro."
+        title="Baixar Vídeo e Foto do Instagram Grátis | Reels, Posts, Stories"
+        description="Baixe vídeos, reels, fotos e posts do Instagram grátis em HD. Download rápido online sem instalar. Suporta todos os conteúdos do Instagram."
         canonical="/baixar-video-instagram"
-        keywords="baixar vídeo instagram, download reels instagram, baixar foto instagram, instagram downloader, salvar reels"
-        schema={[instagramSchema]}
+        keywords="baixar vídeo instagram, download instagram video, instagram downloader, baixar reels instagram, instagram reels download, baixar posts instagram, instagram photo downloader, download instagram online, salvar instagram, instagram to mp4, baixar stories instagram, instagram media downloader, download grátis instagram, converter instagram"
+        schema={instagramSchema}
       />
 
       <div className="mb-8">

@@ -231,10 +231,10 @@ export default function YouTube() {
       className="mx-auto max-w-3xl"
     >
       <SEOHead
-        title="Baixar Vídeo do YouTube — Converter YouTube para MP3 e MP4"
-        description="Baixe qualquer vídeo do YouTube grátis. Converta para MP4 (720p, 1080p), MP3, WAV e outros formatos. Rápido, online e sem instalar nada."
+        title="Baixar Vídeo do YouTube Grátis | Converter YouTube para MP3 e MP4"
+        description="Baixe vídeos do YouTube em MP3, MP4, HD e Full HD grátis. Converta YouTube para MP3, MP4, WAV. Download rápido online sem instalar. Suporta YouTube Shorts."
         canonical="/baixar-video-youtube"
-        keywords="baixar vídeo youtube, converter youtube para mp3, youtube to mp3, download youtube video, youtube mp4 downloader"
+        keywords="baixar vídeo youtube, converter youtube para mp3, youtube para mp3, youtube para mp4, download youtube video, youtube downloader, baixar vídeos youtube grátis, converter youtube online, youtube to mp3, youtube to mp4, download youtube mp3, download youtube mp4, youtube shorts download, converter áudio youtube, extrair áudio youtube, baixar música youtube"
         schema={[youtubeSchema, faqSchema]}
       />
 

@@ -175,11 +175,11 @@ export default function TikTok() {
       className="mx-auto max-w-3xl"
     >
       <SEOHead
-        title="Baixar Vídeo do TikTok Sem Marca D'água — Download Grátis"
-        description="Baixe vídeos do TikTok sem marca d'água gratuitamente. Sem instalar nada. Download rápido em MP4 HD, online e sem registro."
+        title="Baixar Vídeo do TikTok Sem Marca D'água Grátis | Download TikTok"
+        description="Baixe vídeos do TikTok sem marca d'água em HD/Full HD grátis. Download rápido online sem instalar. Suporta todos os vídeos TikTok e música."
         canonical="/baixar-video-tiktok"
-        keywords="baixar vídeo tiktok, download tiktok sem marca d'água, tiktok downloader, salvar vídeo tiktok, tiktok mp4"
-        schema={[tiktokSchema]}
+        keywords="baixar vídeo tiktok, download tiktok video, tiktok downloader, tiktok sem marca d'água, baixar vídeos tiktok grátis, converter tiktok, tiktok to mp4, download tiktok online, salvar vídeo tiktok, tiktok hd download, baixar música tiktok, tiktok video downloader, download de vídeo tiktok"
+        schema={tiktokSchema}
       />
 
       <div className="mb-8">

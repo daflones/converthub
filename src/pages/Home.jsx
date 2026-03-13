@@ -134,10 +134,10 @@ export default function Home() {
       className="mx-auto max-w-5xl"
     >
       <SEOHead
-        title="Conversor de Arquivos Online Grátis"
-        description="ConvertHub: converta vídeos, áudios, imagens e documentos online e grátis. Baixe vídeos do YouTube, converta MP4 para MP3, JPG para PNG e muito mais."
+        title="Conversor de Arquivos Online Grátis | ConvertHub"
+        description="ConvertHub: converta vídeos, áudios, imagens e documentos online grátis. Baixe vídeos do YouTube para MP3/MP4, TikTok e Instagram. Converta JPG para PNG, MP4 para AVI e mais."
         canonical="/"
-        keywords="conversor de arquivos, converter vídeo, converter áudio, converter imagem, baixar youtube, mp4 para mp3"
+        keywords="conversor de arquivos, converter vídeo, converter áudio, converter imagem, baixar youtube, youtube para mp3, youtube para mp4, baixar vídeos youtube, baixar vídeos tiktok, baixar vídeos instagram, conversor tiktok, conversor instagram, mp4 para mp3, jpg para png, converter vídeo online, conversor grátis, download youtube, download tiktok, download instagram, converter formato, conversor arquivos online"
         schema={homeSchema}
       />
 
