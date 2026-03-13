@@ -282,6 +282,9 @@ app.post('/api/instagram/download', async (req, res) => {
   const igRegex = /(?:instagram\.com)\/(p|reel|reels|stories|tv)\/[a-zA-Z0-9_-]+/
   if (!igRegex.test(url)) return res.status(400).json({ error: 'URL do Instagram inválida' })
 
+  // Converter /reels/ para /reel/ se necessário (ator Instagram só aceita /reel/)
+  const normalizedUrl = url.replace('/reels/', '/reel/')
+
   // SSE
   res.setHeader('Content-Type', 'text/event-stream')
   res.setHeader('Cache-Control', 'no-cache')
@@ -297,7 +300,7 @@ app.post('/api/instagram/download', async (req, res) => {
     sendEvent({ type: 'progress', percent: 10 })
 
     const input = {
-      instagram_urls: [url],
+      instagram_urls: [normalizedUrl],
     }
 
     const run = await apifyClient.actor('EYxjTNaAMlqUePwza').start(input)
@@ -348,22 +351,20 @@ app.post('/api/instagram/download', async (req, res) => {
     sendEvent({ type: 'progress', percent: 100 })
 
     // Parse Instagram results using real payload structure
-    const results = []
-    for (const item of items) {
-      const dlUrl = item.download_url || item.downloadUrl || item.videoUrl || item.displayUrl || ''
-      if (!dlUrl) continue
-
-      results.push({
-        type: item.media_type || (item.file_extension === 'mp4' ? 'video' : 'image'),
-        downloadUrl: dlUrl,
-        thumbnail: item.thumbnail_url || item.thumbnailUrl || item.displayUrl || '',
-        caption: (item.title || item.caption || '').substring(0, 200),
-        username: item.username || item.ownerUsername || '',
-        likes: item.like_count || 0,
-        comments: item.comment_count || 0,
-        timestamp: item.taken_at || item.timestamp || '',
-      })
-    }
+    // Fields: media_type, shortcode, title, username, thumbnail_url, download_url, like_count, comment_count
+    const results = items.map(item => ({
+      type: item.media_type || 'video',
+      downloadUrl: item.download_url || '',
+      thumbnail: item.thumbnail_url || '',
+      username: item.username || '',
+      title: item.title || '',
+      mediaType: item.media_type || '',
+      shortcode: item.shortcode || '',
+      likeCount: item.like_count || 0,
+      commentCount: item.comment_count || 0,
+      takenAt: item.taken_at || '',
+      sourceUrl: item.source_url || '',
+    }))
 
     if (results.length === 0) {
       sendEvent({ type: 'error', message: 'Não foi possível extrair mídia desta URL.' })

@@ -274,58 +274,61 @@ export default function Instagram() {
               transition={{ delay: idx * 0.1 }}
               className="overflow-hidden rounded-2xl border border-border bg-surface"
             >
-              <div className="flex gap-4 p-4">
-                {/* Thumbnail */}
-                {item.thumbnail && (
-                  <div className="relative flex-shrink-0 overflow-hidden rounded-xl">
-                    <img
-                      src={item.thumbnail}
-                      alt="Preview"
-                      className="h-24 w-24 object-cover"
-                      onError={(e) => { e.target.style.display = 'none' }}
-                    />
-                    <div className="absolute top-1 right-1 rounded-md bg-black/70 px-1.5 py-0.5 text-[10px] font-bold text-white uppercase">
-                      {item.type === 'video' ? <Video className="h-3 w-3" /> : <Image className="h-3 w-3" />}
-                    </div>
-                  </div>
+              {/* Video/Image Preview */}
+              <div className="relative bg-black">
+                {item.type === 'video' ? (
+                  <video
+                    controls
+                    poster={item.thumbnail}
+                    className="w-full max-h-80 object-contain"
+                    preload="metadata"
+                  >
+                    <source src={item.downloadUrl} type="video/mp4" />
+                    Seu navegador não suporta reprodução de vídeo.
+                  </video>
+                ) : (
+                  <img
+                    src={item.thumbnail}
+                    alt="Preview"
+                    className="w-full max-h-80 object-contain"
+                    onError={(e) => { e.target.style.display = 'none' }}
+                  />
                 )}
+                <div className="absolute top-2 left-2 rounded-md bg-black/70 px-2 py-1 flex items-center gap-1">
+                  <InstagramIcon className="h-3.5 w-3.5 text-pink-400" />
+                  <span className="text-xs font-bold text-white">Instagram</span>
+                </div>
+              </div>
 
-                <div className="flex flex-1 flex-col justify-between min-w-0">
-                  <div>
-                    {item.username && (
-                      <p className="flex items-center gap-1.5 text-sm font-semibold text-white mb-1">
-                        <User className="h-3.5 w-3.5 text-pink-400" />
-                        @{item.username}
-                      </p>
-                    )}
-                    {item.caption && (
-                      <p className="text-xs text-gray-400 line-clamp-2">{item.caption}</p>
-                    )}
-                  </div>
-                  <div className="mt-2 flex items-center gap-3 text-xs text-gray-500">
-                    <span className={`rounded-md px-2 py-0.5 text-[10px] font-bold uppercase ${
-                      item.type === 'video' ? 'bg-purple-500/20 text-purple-400' : 'bg-blue-500/20 text-blue-400'
-                    }`}>
-                      {item.type === 'video' ? 'Vídeo' : 'Imagem'}
+              {/* Header with Title and Stats */}
+              <div className="p-4 border-b border-border">
+                {item.username && (
+                  <p className="flex items-center gap-1.5 text-sm font-semibold text-white mb-2">
+                    <User className="h-3.5 w-3.5 text-pink-400" />
+                    @{item.username}
+                  </p>
+                )}
+                {item.title && (
+                  <p className="text-sm text-gray-300 line-clamp-3 mb-2">{item.title}</p>
+                )}
+                <div className="flex items-center gap-4 text-xs text-gray-500">
+                  {item.likeCount > 0 && (
+                    <span className="flex items-center gap-1">
+                      <Heart className="h-3 w-3" />
+                      {item.likeCount === -1 ? 'Não disponível' : formatNumber(item.likeCount)}
                     </span>
-                    {item.likes > 0 && (
-                      <span className="flex items-center gap-1">
-                        <Heart className="h-3 w-3" />
-                        {formatNumber(item.likes)}
-                      </span>
-                    )}
-                    {item.comments > 0 && (
-                      <span className="flex items-center gap-1">
-                        <MessageCircle className="h-3 w-3" />
-                        {formatNumber(item.comments)}
-                      </span>
-                    )}
-                  </div>
+                  )}
+                  {item.commentCount > 0 && (
+                    <span className="flex items-center gap-1">
+                      <MessageCircle className="h-3 w-3" />
+                      {formatNumber(item.commentCount)}
+                    </span>
+                  )}
                 </div>
               </div>
 
               {/* Download Button */}
-              <div className="border-t border-border p-3">
+              <div className="p-4">
                 <button
                   onClick={() => handleDownload(item)}
                   className="btn-primary flex w-full items-center justify-center gap-2 py-2.5 text-sm"
