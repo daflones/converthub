@@ -1,65 +1,55 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 export default function AdSlot({ className = '', forceRefresh = false }) {
   const adRef = useRef(null)
-  const pushed = useRef(false)
-  const [adLoaded, setAdLoaded] = useState(false)
   const uniqueKey = `ad-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
 
   useEffect(() => {
-    if (pushed.current && !forceRefresh) return
+    if (!adRef.current) return
     
-    const timer = setTimeout(() => {
+    // Função para carregar o anúncio
+    const loadAd = () => {
       try {
-        if (adRef.current && window.adsbygoogle) {
+        if (window.adsbygoogle && adRef.current) {
+          // Remover anúncio anterior se existir
+          if (adRef.current.firstChild) {
+            adRef.current.innerHTML = ''
+          }
+          
+          // Adicionar atributos necessários
+          adRef.current.setAttribute('data-ad-client', 'ca-pub-4861547568821741')
+          adRef.current.setAttribute('data-ad-slot', '6240002763')
+          adRef.current.setAttribute('data-ad-format', 'auto')
+          adRef.current.setAttribute('data-full-width-responsive', 'true')
+          
           console.log('Loading AdSense ad...')
           ;(window.adsbygoogle = window.adsbygoogle || []).push({})
-          pushed.current = true
-          setAdLoaded(true)
-          
-          // Verificar se o anúncio foi preenchido após 2 segundos
-          setTimeout(() => {
-            if (adRef.current) {
-              const rect = adRef.current.getBoundingClientRect()
-              if (rect.height > 0) {
-                console.log('Ad loaded successfully, height:', rect.height)
-              } else {
-                console.warn('Ad may not have loaded (height = 0)')
-              }
-            }
-          }, 2000)
-        } else {
-          console.warn('AdSense not available')
         }
       } catch (e) {
         console.error('Error loading AdSense:', e)
       }
-    }, 500) // Pequeno delay para garantir que o DOM está pronto
+    }
 
-    return () => clearTimeout(timer)
+    // Tentar carregar imediatamente se o AdSense já estiver disponível
+    if (window.adsbygoogle) {
+      loadAd()
+    } else {
+      // Se não, esperar um pouco e tentar novamente
+      const timer = setTimeout(() => {
+        loadAd()
+      }, 2000)
+      return () => clearTimeout(timer)
+    }
   }, [forceRefresh])
 
   return (
     <div className={`ad-container my-6 flex justify-center ${className}`}>
-      {/* Debug border para visualização */}
-      <div className="w-full max-w-[728px] border border-dashed border-gray-700 rounded-lg p-2">
-        <ins
-          key={forceRefresh ? uniqueKey : undefined}
-          className="adsbygoogle"
-          style={{ display: 'block', minHeight: '50px' }}
-          data-ad-client="ca-pub-4861547568821741"
-          data-ad-slot="6240002763"
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-          ref={adRef}
-        />
-        {/* Debug info - remover em produção */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="text-xs text-gray-600 mt-1 text-center">
-            AdSlot {adLoaded ? '(loaded)' : '(loading...)'}
-          </div>
-        )}
-      </div>
+      <ins
+        key={forceRefresh ? uniqueKey : undefined}
+        className="adsbygoogle"
+        style={{ display: 'block', minHeight: '90px' }}
+        ref={adRef}
+      />
     </div>
   )
 }

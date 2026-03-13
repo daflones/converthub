@@ -16,6 +16,7 @@ import TikTok from './pages/TikTok'
 import AdGate from './pages/AdGate'
 import NotFound from './pages/NotFound'
 import AdBlockOverlay from './components/shared/AdBlockOverlay'
+import AdSenseManager from './components/shared/AdSenseManager'
 
 export default function App() {
   const location = useLocation()
@@ -27,6 +28,7 @@ export default function App() {
 
   return (
     <div className="flex min-h-screen bg-background">
+      <AdSenseManager />
       <AdBlockOverlay />
       <Sidebar />
       <div className="flex flex-1 flex-col ml-[240px]">
