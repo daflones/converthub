@@ -2,10 +2,53 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Youtube, Download, AlertCircle, Clock, User, Play } from 'lucide-react'
 import ProgressBar from '../components/shared/ProgressBar'
+import SEOHead from '../components/shared/SEOHead'
+import FAQSection from '../components/shared/FAQSection'
 import useAdGate from '../hooks/useAdGate'
 import { getVisitorId } from '../hooks/useVisitorId'
 
 const qualities = ['360', '480', '720', '1080']
+
+const youtubeSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ConvertHub — Baixar Vídeo do YouTube",
+  "url": "https://converthub.nanosync.com.br/baixar-video-youtube",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Todos (via navegador)",
+  "browserRequirements": "Requer JavaScript e HTML5",
+  "description": "Baixe qualquer vídeo do YouTube em MP4, MP3, WAV e outros formatos gratuitamente.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" },
+  "featureList": [
+    "Download de vídeos do YouTube em MP4",
+    "Conversão YouTube para MP3",
+    "Suporte a YouTube Shorts",
+    "Seleção de qualidade (480p, 720p, 1080p)"
+  ],
+  "inLanguage": "pt-BR"
+}
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Como baixar vídeo do YouTube grátis?", "acceptedAnswer": { "@type": "Answer", "text": "Cole a URL do vídeo no campo acima, selecione o formato desejado (MP4 ou MP3) e clique em Processar. Após o processamento, clique em Baixar para salvar o arquivo." } },
+    { "@type": "Question", "name": "Posso baixar YouTube Shorts?", "acceptedAnswer": { "@type": "Answer", "text": "Sim! Selecione a aba YouTube Shorts, cole a URL do Short e escolha o formato. O download funciona da mesma forma que vídeos normais." } },
+    { "@type": "Question", "name": "Quais formatos de download estão disponíveis?", "acceptedAnswer": { "@type": "Answer", "text": "Você pode baixar em MP4 (360p, 480p, 720p, 1080p). O processamento é feito em servidores dedicados para máxima velocidade." } },
+    { "@type": "Question", "name": "O download do YouTube é grátis?", "acceptedAnswer": { "@type": "Answer", "text": "Sim, o ConvertHub é totalmente gratuito. Não é necessário criar conta ou instalar nenhum software." } },
+    { "@type": "Question", "name": "Funciona no celular?", "acceptedAnswer": { "@type": "Answer", "text": "Sim! O ConvertHub funciona em qualquer navegador, seja no celular, tablet ou computador." } },
+    { "@type": "Question", "name": "Por que o processamento demora alguns minutos?", "acceptedAnswer": { "@type": "Answer", "text": "O vídeo é processado em servidores dedicados para garantir a melhor qualidade. Vídeos mais longos ou em alta resolução podem levar de 30 segundos a 5 minutos." } }
+  ]
+}
+
+const youtubeFaqs = [
+  { q: 'Como baixar vídeo do YouTube grátis?', a: 'Cole a URL do vídeo no campo acima, selecione o formato desejado e clique em Processar. Após o processamento, clique em Baixar para salvar o arquivo.' },
+  { q: 'Posso baixar YouTube Shorts?', a: 'Sim! Selecione a aba YouTube Shorts, cole a URL do Short e escolha o formato. O download funciona da mesma forma que vídeos normais.' },
+  { q: 'Quais qualidades de vídeo estão disponíveis?', a: 'Você pode baixar em MP4 nas qualidades 360p, 480p, 720p e 1080p. Escolha a qualidade antes de processar.' },
+  { q: 'O download é seguro e gratuito?', a: 'Sim, o ConvertHub é totalmente gratuito e seguro. Não é necessário criar conta ou instalar nenhum software.' },
+  { q: 'Funciona no celular?', a: 'Sim! O ConvertHub funciona em qualquer navegador moderno, seja no celular, tablet ou computador.' },
+  { q: 'Por que o processamento demora alguns minutos?', a: 'O vídeo é processado em servidores dedicados para garantir a melhor qualidade. Vídeos mais longos ou em alta resolução podem levar de 30 segundos a 5 minutos.' },
+]
 
 export default function YouTube() {
   const [url, setUrl] = useState('')
@@ -185,12 +228,23 @@ export default function YouTube() {
       exit={{ opacity: 0 }}
       className="mx-auto max-w-3xl"
     >
+      <SEOHead
+        title="Baixar Vídeo do YouTube — Converter YouTube para MP3 e MP4"
+        description="Baixe qualquer vídeo do YouTube grátis. Converta para MP4 (720p, 1080p), MP3, WAV e outros formatos. Rápido, online e sem instalar nada."
+        canonical="/baixar-video-youtube"
+        keywords="baixar vídeo youtube, converter youtube para mp3, youtube to mp3, download youtube video, youtube mp4 downloader"
+        schema={[youtubeSchema, faqSchema]}
+      />
+
       <div className="mb-8">
         <h1 className="mb-2 font-display text-3xl font-bold text-white">
           <Youtube className="mr-3 inline h-8 w-8 text-red-500" />
-          YouTube Download
+          Baixar Vídeo do YouTube — Conversor YouTube para MP4 e MP3
         </h1>
-        <p className="text-gray-400">Baixe vídeos e Shorts do YouTube em MP4</p>
+        <p className="text-gray-400">
+          O ConvertHub permite baixar vídeos do YouTube gratuitamente, sem instalar nenhum aplicativo.
+          Cole a URL do vídeo ou do YouTube Shorts, escolha a qualidade e o formato e faça o download em segundos.
+        </p>
       </div>
 
       {/* Type Toggle */}
@@ -377,6 +431,7 @@ export default function YouTube() {
           ))}
         </motion.div>
       )}
+      <FAQSection faqs={youtubeFaqs} />
     </motion.div>
   )
 }

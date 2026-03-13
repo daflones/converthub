@@ -5,8 +5,31 @@ import FileDropZone from '../components/shared/FileDropZone'
 import FormatSelector from '../components/shared/FormatSelector'
 import ProgressBar from '../components/shared/ProgressBar'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
+import SEOHead from '../components/shared/SEOHead'
+import FAQSection from '../components/shared/FAQSection'
 import useAdGate from '../hooks/useAdGate'
 import useConverter from '../hooks/useConverter'
+
+const audioSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ConvertHub — Conversor de Áudio Online",
+  "url": "https://converthub.nanosync.com.br/conversor-de-audio",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Todos (via navegador)",
+  "description": "Extraia áudio de vídeos MP4 e converta entre formatos de áudio. MP3, WAV, FLAC, AAC e mais.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" },
+  "featureList": ["Conversão entre MP3, WAV, AAC, FLAC, M4A, Opus, WMA, OGG", "Extração de áudio de vídeos MP4", "Conversão MP4 para MP3 direta"],
+  "inLanguage": "pt-BR"
+}
+
+const audioFaqs = [
+  { q: 'Como converter MP4 para MP3?', a: 'Use a aba "MP4 → MP3", arraste seu arquivo de vídeo MP4 e clique em Extrair MP3. O áudio será extraído automaticamente.' },
+  { q: 'Como extrair o áudio de um vídeo?', a: 'Use a aba "Vídeo → Áudio", selecione o vídeo, escolha o formato de áudio de saída (MP3, WAV, etc.) e clique em Converter.' },
+  { q: 'Qual a diferença entre MP3 e WAV?', a: 'MP3 é comprimido e menor em tamanho, ideal para música. WAV é sem compressão, com qualidade máxima, ideal para edição profissional.' },
+  { q: 'FLAC é melhor que MP3?', a: 'FLAC oferece qualidade superior ao MP3 por ser sem perdas (lossless), mas gera arquivos maiores. Ideal para audiófilos.' },
+  { q: 'Qual o tamanho máximo de arquivo?', a: 'Você pode converter arquivos de áudio e vídeo de até 500MB gratuitamente.' },
+]
 
 const audioFormats = ['mp3', 'wav', 'aac', 'flac', 'm4a', 'opus', 'wma', 'ogg']
 const audioInputFormats = ['mp3', 'wav', 'aac', 'flac', 'm4a', 'opus', 'wma', 'ogg']
@@ -68,12 +91,23 @@ export default function AudioConverter() {
       exit={{ opacity: 0 }}
       className="mx-auto max-w-3xl"
     >
+      <SEOHead
+        title="Conversor de Áudio Online — MP4 para MP3, WAV, FLAC"
+        description="Extraia áudio de vídeos MP4 e converta entre formatos de áudio. MP3, WAV, FLAC, AAC, OGG e mais. Ferramenta gratuita online."
+        canonical="/conversor-de-audio"
+        keywords="conversor de áudio, mp4 para mp3, convert mp4 to mp3, extrair áudio de vídeo, converter mp3 online"
+        schema={audioSchema}
+      />
+
       <div className="mb-8">
         <h1 className="mb-2 font-display text-3xl font-bold text-white">
           <Music className="mr-3 inline h-8 w-8 text-green-500" />
-          Conversor de Áudio
+          Conversor de Áudio Online — MP4 para MP3, WAV, FLAC e Mais
         </h1>
-        <p className="text-gray-400">Converta áudios, extraia MP3 de vídeos e mais</p>
+        <p className="text-gray-400">
+          Extraia áudio de vídeos MP4 ou converta entre todos os formatos de áudio online e grátis.
+          Transforme MP4 em MP3, converta WAV para FLAC, OGG para AAC e muito mais. Processamento rápido e sem instalar programas.
+        </p>
       </div>
 
       {/* Tabs */}
@@ -168,6 +202,7 @@ export default function AudioConverter() {
           </motion.div>
         )}
       </div>
+      <FAQSection faqs={audioFaqs} />
     </motion.div>
   )
 }

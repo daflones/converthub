@@ -18,6 +18,7 @@ import { PDFDocument } from 'pdf-lib'
 import mammoth from 'mammoth'
 import * as XLSX from 'xlsx'
 import Papa from 'papaparse'
+import compression from 'compression'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -27,6 +28,9 @@ ffmpeg.setFfprobePath(ffprobeInstaller.path)
 
 const app = express()
 const PORT = process.env.PORT || 3000
+
+// ─── Compression ────────────────────────────────────────────────────
+app.use(compression())
 
 // ─── CORS ───────────────────────────────────────────────────────────
 app.use(cors({

@@ -5,8 +5,31 @@ import FileDropZone from '../components/shared/FileDropZone'
 import FormatSelector from '../components/shared/FormatSelector'
 import CopyButton from '../components/shared/CopyButton'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
+import SEOHead from '../components/shared/SEOHead'
+import FAQSection from '../components/shared/FAQSection'
 import useAdGate from '../hooks/useAdGate'
 import { getVisitorId } from '../hooks/useVisitorId'
+
+const base64Schema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ConvertHub \u2014 Conversor Base64 Online",
+  "url": "https://converthub.nanosync.com.br/conversor-base64",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Todos (via navegador)",
+  "description": "Converta arquivos para Base64 e Base64 para arquivos online. Suporta imagens, \u00e1udio, v\u00eddeo e documentos.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" },
+  "featureList": ["Encode de arquivo para Base64", "Decode de Base64 para arquivo", "Suporte a imagens, \u00e1udio, v\u00eddeo e PDF"],
+  "inLanguage": "pt-BR"
+}
+
+const base64Faqs = [
+  { q: 'O que \u00e9 Base64?', a: 'Base64 \u00e9 um m\u00e9todo de codifica\u00e7\u00e3o que converte dados bin\u00e1rios em texto ASCII. \u00c9 usado para transmitir dados em formatos que s\u00f3 aceitam texto, como e-mails e JSON.' },
+  { q: 'Como converter Base64 para imagem?', a: 'Cole a string Base64 no campo de entrada, selecione o formato de imagem (PNG, JPG, WebP) e clique em Decodificar. O arquivo ser\u00e1 baixado automaticamente.' },
+  { q: 'Como converter um arquivo para Base64?', a: 'Use a aba "Arquivo \u2192 Base64", arraste seu arquivo e o resultado em Base64 ser\u00e1 exibido para voc\u00ea copiar.' },
+  { q: 'Quais formatos s\u00e3o suportados?', a: 'Suportamos imagens (PNG, JPG, WebP), \u00e1udio (MP3, WAV, OGG), v\u00eddeo (MP4, WebM) e documentos (PDF, TXT).' },
+  { q: 'H\u00e1 limite de tamanho?', a: 'Para encode, o arquivo pode ter at\u00e9 500MB. Para decode, a string Base64 pode ser de qualquer tamanho.' },
+]
 
 const decodeFormats = ['png', 'jpg', 'webp', 'mp3', 'wav', 'ogg', 'mp4', 'webm', 'pdf', 'txt']
 
@@ -100,12 +123,23 @@ export default function Base64() {
       exit={{ opacity: 0 }}
       className="mx-auto max-w-3xl"
     >
+      <SEOHead
+        title="Conversor Base64 Online \u2014 Encode e Decode Gr\u00e1tis"
+        description="Converta arquivos para Base64 e Base64 para arquivos online. Suporta imagens, \u00e1udio, v\u00eddeo e documentos. Ferramenta gratuita e r\u00e1pida."
+        canonical="/conversor-base64"
+        keywords="base64 converter, base64 to file, converter base64, encode decode base64, base64 online"
+        schema={base64Schema}
+      />
+
       <div className="mb-8">
         <h1 className="mb-2 font-display text-3xl font-bold text-white">
           <Binary className="mr-3 inline h-8 w-8 text-cyan-500" />
-          Conversor Base64
+          Conversor Base64 Online \u2014 Encode e Decode Gr\u00e1tis
         </h1>
-        <p className="text-gray-400">Codifique e decodifique Base64 para qualquer formato</p>
+        <p className="text-gray-400">
+          Converta arquivos para Base64 e Base64 para arquivos online. Suporta imagens, \u00e1udio, v\u00eddeo e documentos.
+          Ferramenta gratuita e r\u00e1pida, direto no navegador.
+        </p>
       </div>
 
       {/* Tabs */}
@@ -223,6 +257,7 @@ export default function Base64() {
           </>
         )}
       </div>
+      <FAQSection faqs={base64Faqs} />
     </motion.div>
   )
 }

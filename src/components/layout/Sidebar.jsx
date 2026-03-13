@@ -16,13 +16,13 @@ import {
 
 const navItems = [
   { to: '/', icon: Home, label: 'Início' },
-  { to: '/youtube', icon: Youtube, label: 'YouTube' },
-  { to: '/video-converter', icon: Video, label: 'Vídeo' },
-  { to: '/audio-converter', icon: Music, label: 'Áudio' },
-  { to: '/image-converter', icon: Image, label: 'Imagem' },
-  { to: '/doc-converter', icon: FileText, label: 'Documentos' },
-  { to: '/base64', icon: Binary, label: 'Base64' },
-  { to: '/char-converter', icon: Type, label: 'Caracteres' },
+  { to: '/baixar-video-youtube', icon: Youtube, label: 'YouTube' },
+  { to: '/conversor-de-video', icon: Video, label: 'Vídeo' },
+  { to: '/conversor-de-audio', icon: Music, label: 'Áudio' },
+  { to: '/conversor-de-imagem', icon: Image, label: 'Imagem' },
+  { to: '/conversor-de-documentos', icon: FileText, label: 'Documentos' },
+  { to: '/conversor-base64', icon: Binary, label: 'Base64' },
+  { to: '/conversor-de-caracteres', icon: Type, label: 'Caracteres' },
 ]
 
 export default function Sidebar() {

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Disallow: /ad-gate
+Disallow: /api/
+
+Sitemap: https://converthub.nanosync.com.br/sitemap.xml

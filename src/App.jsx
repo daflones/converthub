@@ -31,13 +31,13 @@ export default function App() {
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<Home />} />
-              <Route path="/youtube" element={<YouTube />} />
-              <Route path="/video-converter" element={<VideoConverter />} />
-              <Route path="/audio-converter" element={<AudioConverter />} />
-              <Route path="/image-converter" element={<ImageConverter />} />
-              <Route path="/doc-converter" element={<DocConverter />} />
-              <Route path="/base64" element={<Base64 />} />
-              <Route path="/char-converter" element={<CharConverter />} />
+              <Route path="/baixar-video-youtube" element={<YouTube />} />
+              <Route path="/conversor-de-video" element={<VideoConverter />} />
+              <Route path="/conversor-de-audio" element={<AudioConverter />} />
+              <Route path="/conversor-de-imagem" element={<ImageConverter />} />
+              <Route path="/conversor-de-documentos" element={<DocConverter />} />
+              <Route path="/conversor-base64" element={<Base64 />} />
+              <Route path="/conversor-de-caracteres" element={<CharConverter />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AnimatePresence>

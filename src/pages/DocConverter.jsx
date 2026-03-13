@@ -5,8 +5,31 @@ import FileDropZone from '../components/shared/FileDropZone'
 import FormatSelector from '../components/shared/FormatSelector'
 import ProgressBar from '../components/shared/ProgressBar'
 import LoadingSpinner from '../components/shared/LoadingSpinner'
+import SEOHead from '../components/shared/SEOHead'
+import FAQSection from '../components/shared/FAQSection'
 import useAdGate from '../hooks/useAdGate'
 import useConverter from '../hooks/useConverter'
+
+const docSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "ConvertHub \u2014 Conversor de Documentos Online",
+  "url": "https://converthub.nanosync.com.br/conversor-de-documentos",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Todos (via navegador)",
+  "description": "Converta documentos online gr\u00e1tis. PDF para Word, Word para PDF, CSV para Excel e mais.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" },
+  "featureList": ["Convers\u00e3o entre PDF, DOCX, TXT, HTML", "Convers\u00e3o entre CSV, XLSX, JSON", "Detec\u00e7\u00e3o autom\u00e1tica de formato"],
+  "inLanguage": "pt-BR"
+}
+
+const docFaqs = [
+  { q: 'Como converter PDF para Word?', a: 'Arraste seu arquivo PDF para a \u00e1rea de upload, o formato ser\u00e1 detectado automaticamente. Selecione DOCX como formato de sa\u00edda e clique em Converter.' },
+  { q: 'Como converter Word para PDF?', a: 'Arraste seu arquivo DOCX, selecione PDF como formato de sa\u00edda e clique em Converter. O PDF ser\u00e1 gerado instantaneamente.' },
+  { q: 'Quais formatos de documento s\u00e3o suportados?', a: 'Suportamos PDF, DOCX, TXT, HTML para convers\u00e3o entre si, e tamb\u00e9m CSV, XLSX e JSON para dados tabulares.' },
+  { q: 'A convers\u00e3o mant\u00e9m a formata\u00e7\u00e3o?', a: 'A convers\u00e3o preserva o texto e a estrutura b\u00e1sica. Formata\u00e7\u00f5es complexas como tabelas e imagens podem ter pequenas diferen\u00e7as.' },
+  { q: 'Posso converter CSV para Excel?', a: 'Sim! Arraste seu arquivo CSV e selecione XLSX como formato de sa\u00edda. O arquivo Excel ser\u00e1 gerado com os dados organizados em colunas.' },
+]
 
 const inputFormats = ['pdf', 'docx', 'txt', 'html', 'csv', 'xlsx', 'json']
 
@@ -70,12 +93,23 @@ export default function DocConverter() {
       exit={{ opacity: 0 }}
       className="mx-auto max-w-3xl"
     >
+      <SEOHead
+        title="Conversor de Documentos Online \u2014 PDF, Word, Excel, CSV"
+        description="Converta documentos online gr\u00e1tis. PDF para Word, Word para PDF, CSV para Excel e mais. R\u00e1pido, seguro e sem instalar software."
+        canonical="/conversor-de-documentos"
+        keywords="conversor de documentos, converter pdf para word, pdf to word, converter pdf online, word para pdf"
+        schema={docSchema}
+      />
+
       <div className="mb-8">
         <h1 className="mb-2 font-display text-3xl font-bold text-white">
           <FileText className="mr-3 inline h-8 w-8 text-orange-500" />
-          Conversor de Documentos
+          Conversor de Documentos Online \u2014 PDF, Word, Excel, CSV
         </h1>
-        <p className="text-gray-400">Converta entre PDF, DOCX, TXT, HTML, CSV, XLSX e JSON</p>
+        <p className="text-gray-400">
+          Converta documentos online gr\u00e1tis. PDF para Word, Word para PDF, CSV para Excel e mais.
+          R\u00e1pido, seguro e sem instalar nenhum software. Suporte a PDF, DOCX, TXT, HTML, CSV, XLSX e JSON.
+        </p>
       </div>
 
       <div className="space-y-6">
@@ -154,6 +188,7 @@ export default function DocConverter() {
           </div>
         )}
       </div>
+      <FAQSection faqs={docFaqs} />
     </motion.div>
   )
 }

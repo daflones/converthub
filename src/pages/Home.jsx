@@ -11,52 +11,84 @@ import {
   Type,
   Sparkles,
 } from 'lucide-react'
+import SEOHead from '../components/shared/SEOHead'
+
+const homeSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://converthub.nanosync.com.br/#website",
+      "url": "https://converthub.nanosync.com.br",
+      "name": "ConvertHub",
+      "description": "Plataforma de conversão de arquivos online gratuita",
+      "inLanguage": ["pt-BR", "en"],
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://converthub.nanosync.com.br/?busca={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://converthub.nanosync.com.br/#organization",
+      "name": "ConvertHub",
+      "url": "https://converthub.nanosync.com.br",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://converthub.nanosync.com.br/favicon.svg",
+        "width": 512,
+        "height": 512
+      }
+    }
+  ]
+}
 
 const categories = [
   {
-    to: '/youtube',
+    to: '/baixar-video-youtube',
     icon: Youtube,
     title: 'YouTube',
     desc: 'Baixe vídeos e Shorts do YouTube em MP4',
     gradient: 'from-red-500 to-red-700',
   },
   {
-    to: '/video-converter',
+    to: '/conversor-de-video',
     icon: Video,
     title: 'Vídeo',
     desc: 'Converta entre MP4, AVI, MKV, WebM e mais',
     gradient: 'from-blue-500 to-blue-700',
   },
   {
-    to: '/audio-converter',
+    to: '/conversor-de-audio',
     icon: Music,
     title: 'Áudio',
     desc: 'MP3, WAV, AAC, FLAC e extração de áudio',
     gradient: 'from-green-500 to-green-700',
   },
   {
-    to: '/image-converter',
+    to: '/conversor-de-imagem',
     icon: Image,
     title: 'Imagem',
     desc: 'JPG, PNG, WebP, GIF, AVIF e mais formatos',
     gradient: 'from-purple-500 to-purple-700',
   },
   {
-    to: '/doc-converter',
+    to: '/conversor-de-documentos',
     icon: FileText,
     title: 'Documentos',
     desc: 'PDF, DOCX, TXT, CSV, XLSX, HTML e JSON',
     gradient: 'from-orange-500 to-orange-700',
   },
   {
-    to: '/base64',
+    to: '/conversor-base64',
     icon: Binary,
     title: 'Base64',
     desc: 'Codifique e decodifique Base64 para qualquer formato',
     gradient: 'from-cyan-500 to-cyan-700',
   },
   {
-    to: '/char-converter',
+    to: '/conversor-de-caracteres',
     icon: Type,
     title: 'Caracteres',
     desc: 'Cases, Morse, Binário, Hex, ROT13 e mais',
@@ -85,6 +117,14 @@ export default function Home() {
       exit={{ opacity: 0 }}
       className="mx-auto max-w-5xl"
     >
+      <SEOHead
+        title="Conversor de Arquivos Online Grátis"
+        description="ConvertHub: converta vídeos, áudios, imagens e documentos online e grátis. Baixe vídeos do YouTube, converta MP4 para MP3, JPG para PNG e muito mais."
+        canonical="/"
+        keywords="conversor de arquivos, converter vídeo, converter áudio, converter imagem, baixar youtube, mp4 para mp3"
+        schema={homeSchema}
+      />
+
       {/* Hero */}
       <section className="relative mb-16 overflow-hidden rounded-3xl bg-surface p-12 text-center">
         {/* Grid effect */}
