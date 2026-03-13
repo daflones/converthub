@@ -699,9 +699,26 @@ app.post('/api/base64/encode', upload.single('file'), (req, res) => {
   }
 })
 
+// ─── Serve static files (production) ────────────────────────────────
+const distPath = path.join(__dirname, 'dist')
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath))
+  console.log('[ConvertHub] Serving static files from dist/')
+}
+
 // ─── Health check ───────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
+})
+
+// ─── SPA catch-all (must be last) ───────────────────────────────────
+app.get('*', (req, res) => {
+  const indexPath = path.join(distPath, 'index.html')
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath)
+  } else {
+    res.status(404).send('Frontend not built. Run: npm run build')
+  }
 })
 
 // ─── Start ──────────────────────────────────────────────────────────
