@@ -4,4 +4,4 @@ Allow: /
 Disallow: /ad-gate
 Disallow: /api/
 
-Sitemap: https://converthub.nanosync.com.br/sitemap.xml
+Sitemap: https://nanosync.com.br/sitemap.xml
