@@ -276,7 +276,7 @@ export default function YouTube() {
       {/* Info Message */}
       <div className="mb-4 rounded-xl border border-blue-500/30 bg-blue-500/10 p-4">
         <p className="text-sm text-blue-300">
-          ⏱️ O processamento pode levar de <strong>2 a 5 minutos</strong> para ser concluído. Por favor, aguarde.
+          ⏱️ O processamento pode levar de <strong>30 segundos a 5 minutos</strong> para ser concluído. Por favor, aguarde.
         </p>
       </div>
 
