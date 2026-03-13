@@ -70,14 +70,24 @@ export default function AdSlot({ className = '', forceRefresh = false }) {
         style={{ 
           display: 'inline-block', 
           width: '336px', 
-          height: '280px'
+          height: '280px',
+          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+          border: '1px dashed rgba(255, 255, 255, 0.2)',
+          borderRadius: '8px'
         }}
         data-ad-client="ca-pub-4861547568821741"
         data-ad-slot="6240002763"
         data-ad-format="auto"
         data-full-width-responsive="true"
+        data-ad-test="on"
         ref={adRef}
       />
+      {/* Fallback para desenvolvimento */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="absolute text-xs text-gray-500 text-center mt-1">
+          AdSense Space (336x280)
+        </div>
+      )}
     </div>
   )
 }
